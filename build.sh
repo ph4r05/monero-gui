@@ -112,7 +112,8 @@ if ! QMAKE=$(find_command qmake qmake-qt5); then
     exit 1
 fi
 $QMAKE ../monero-wallet-gui.pro "$CONFIG" || exit
-$MAKE || exit 
+echo $MAKE || exit
+$MAKE || exit
 
 # Copy monerod to bin folder
 if [ "$platform" != "mingw32" ] && [ "$ANDROID" != true ]; then
