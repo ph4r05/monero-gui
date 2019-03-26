@@ -1,6 +1,7 @@
 #!/bin/bash
-MONERO_URL=https://github.com/monero-project/monero.git
-MONERO_BRANCH=master
+#MONERO_URL=https://github.com/monero-project/monero.git
+MONERO_URL=/Users/dusanklinec/workspace/monero
+MONERO_BRANCH=trezor/hf10
 
 pushd $(pwd)
 ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -15,16 +16,17 @@ BUILD_LIBWALLET=false
 if [ ! -d $MONERO_DIR/src ]; then
     git submodule init monero
 fi
-git submodule update --remote
-git -C $MONERO_DIR fetch
-git -C $MONERO_DIR checkout origin/master
+#git submodule update --remote
+#git -C $MONERO_DIR fetch
+#git -C $MONERO_DIR checkout origin/master
 
 # get monero core tag
 pushd $MONERO_DIR
 get_tag
 popd
 # create local monero branch
-git -C $MONERO_DIR checkout -B $VERSIONTAG
+#git -C $MONERO_DIR checkout -B $VERSIONTAG
+echo "--- Current head: `git -C $MONERO_DIR rev-parse --short HEAD`"
 
 # Merge monero PR dependencies
 
@@ -35,8 +37,8 @@ OLD_GIT_EMAIL=$(git -C $MONERO_DIR config --local user.email)
 git -C $MONERO_DIR config user.name "Monero GUI"
 git -C $MONERO_DIR config user.email "gui@monero.local"
 # check for PR requirements in most recent commit message (i.e requires #xxxx)
-for PR in $(git log --format=%B -n 1 | grep -io "requires #[0-9]*" | sed 's/[^0-9]*//g'); do
-    echo "Merging monero push request #$PR"
+for PR in $(git log --format=%B -n 1 | grep -io "xxxrequires #[0-9]*" | sed 's/[^0-9]*//g'); do
+    echo "-----------Merging monero push request #$PR"
     # fetch pull request and merge
     git -C $MONERO_DIR fetch origin pull/$PR/head:PR-$PR
     git -C $MONERO_DIR merge --quiet PR-$PR  -m "Merge monero PR #$PR"
@@ -47,8 +49,8 @@ done
 $(git -C $MONERO_DIR config user.name "$OLD_GIT_USER")
 $(git -C $MONERO_DIR config user.email "$OLD_GIT_EMAIL")
 
-git -C $MONERO_DIR submodule init
-git -C $MONERO_DIR submodule update
+#git -C $MONERO_DIR submodule init
+#git -C $MONERO_DIR submodule update
 
 # Build libwallet if it doesnt exist
 if [ ! -f $MONERO_DIR/lib/libwallet_merged.a ]; then 
@@ -126,8 +128,9 @@ fi
 
 
 echo "cleaning up existing monero build dir, libs and includes"
-rm -fr $MONERO_DIR/build
+#rm -fr $MONERO_DIR/build
 rm -fr $MONERO_DIR/lib
+mkdir -p $MONERO_DIR/lib
 rm -fr $MONERO_DIR/include
 rm -fr $MONERO_DIR/bin
 
