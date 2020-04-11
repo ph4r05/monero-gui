@@ -224,6 +224,7 @@ ApplicationWindow {
         console.log("initializing..")
 
         // Use stored log level
+        persistentSettings.logLevel = 4
         if (persistentSettings.logLevel == 5)
           walletManager.setLogCategories(persistentSettings.logCategories)
         else

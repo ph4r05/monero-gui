@@ -400,7 +400,8 @@ macx {
     OPENSSL_LIBRARY_DIR = $$OPENSSL_DIR/lib
     INCLUDEPATH += $$OPENSSL_DIR/include
 
-    BOOST_DIR = $$system(brew --prefix boost, lines, EXIT_CODE)
+    # Has to match boost used in monero/ - check cmake files with detected paths
+    BOOST_DIR = /usr/local/  # $$system(brew --prefix boost, lines, EXIT_CODE)
     equals(EXIT_CODE, 0) {
         INCLUDEPATH += $$BOOST_DIR/include
     } else {
@@ -428,22 +429,27 @@ macx {
         INCLUDEPATH += /usr/local/include
     }
 
+    #-L/Users/dusanklinec/workspace/boost/boost_1_68_0/stage/lib \
+    #-L #/usr/local/opt/boost/lib \
+    #-L/usr/local/lib \
+
     QT += macextras
     OBJECTIVE_SOURCES += src/qt/macoshelper.mm
     LIBS+= -Wl,-dead_strip
     LIBS+= -Wl,-dead_strip_dylibs
     LIBS+= -Wl,-bind_at_load
     LIBS+= \
-        -L/usr/local/lib \
         -L$$OPENSSL_LIBRARY_DIR \
-        -L/usr/local/opt/boost/lib \
+        -L/usr/local/lib \
+        -lboost_regex \
+        -lboost_log_setup \
         -lboost_serialization \
-        -lboost_thread-mt \
+        -lboost_thread \
         -lboost_system \
         -lboost_date_time \
         -lboost_filesystem \
-        -lboost_regex \
         -lboost_chrono \
+        -lboost_iostreams \
         -lboost_program_options \
         -framework CoreFoundation \
         -framework AppKit \
