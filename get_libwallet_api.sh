@@ -37,8 +37,13 @@ OLD_GIT_EMAIL=$(git -C $MONERO_DIR config --local user.email)
 git -C $MONERO_DIR config user.name "Monero GUI"
 git -C $MONERO_DIR config user.email "gui@monero.local"
 # check for PR requirements in most recent commit message (i.e requires #xxxx)
-for PR in $(git log --format=%B -n 1 | grep -io "xxxrequires #[0-9]*" | sed 's/[^0-9]*//g'); do
-    echo "-----------Merging monero push request #$PR"
+echo "CHECKING______"
+git log --format=%B -n 1
+git log -n 1
+echo "OK"
+
+for PR in $(git log --format=%B -n 1 | grep -io "requires #[0-9]*" | sed 's/[^0-9]*//g'); do
+    echo "-----------Merging monero push request #$PR !"
     # fetch pull request and merge
     git -C $MONERO_DIR fetch origin pull/$PR/head:PR-$PR
     git -C $MONERO_DIR merge --quiet PR-$PR  -m "Merge monero PR #$PR"
